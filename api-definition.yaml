@@ -1,0 +1,99 @@
+openapi: 3.0.0
+info:
+  title: Football API
+  description: 65 lig, canlı skor, puan durumu, takım bilgileri — ESPN + FlashScore
+  version: 2.0.0
+  contact:
+    name: Football API
+
+servers:
+  - url: http://35.175.123.153:3000
+    description: Production
+
+security:
+  - ApiKeyAuth: []
+
+paths:
+  /api/health:
+    get:
+      summary: API durumu
+      responses:
+        '200':
+          description: Sağlık kontrolü
+
+  /api/leagues:
+    get:
+      summary: Tüm ligler
+      responses:
+        '200':
+          description: 65 lig listesi
+
+  /api/matches:
+    get:
+      summary: Maçları getir
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [live, upcoming, finished]
+          description: Maç durumu
+        - name: league
+          in: query
+          schema:
+            type: string
+          description: Lig ID (örn: eng.1, tur.1)
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Takım veya lig adı
+      responses:
+        '200':
+          description: Maç listesi
+
+  /api/standings/{leagueId}:
+    get:
+      summary: Puan durumu
+      parameters:
+        - name: leagueId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Puan durumu
+
+  /api/teams/{leagueId}:
+    get:
+      summary: Takım listesi
+      parameters:
+        - name: leagueId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Takım listesi
+
+  /api/extra/{leagueId}:
+    get:
+      summary: FlashScore ligleri (Finlandiya, Belarus vb.)
+      parameters:
+        - name: leagueId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: FlashScore maçları
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
