@@ -1,0 +1,29 @@
+{
+  "name": "football-api",
+  "version": "2.0.0",
+  "description": "Bağımsız Futbol API - Dünya ligleri, canlı skorlar, puan durumları",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "set NODE_ENV=development&& node src/index.js",
+    "prod": "set NODE_ENV=production&& node src/index.js",
+    "refresh": "curl http://localhost:3000/api/refresh"
+  },
+  "keywords": ["football", "soccer", "api", "live-scores", "standings"],
+  "author": "Bot",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "axios": "^1.16.1",
+    "cheerio": "^1.2.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.5.2",
+    "helmet": "^8.2.0",
+    "morgan": "^1.10.1",
+    "node-cron": "^4.2.1",
+    "puppeteer-core": "^25.0.4",
+    "uuid": "^14.0.0"
+  }
+}

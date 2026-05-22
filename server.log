@@ -1,0 +1,19 @@
+◇ injected env (6) from .env // tip: ◈ encrypted .env [www.dotenvx.com]
+
+╔══════════════════════════════════╗
+║     FOOTBALL API v2.0           ║
+║     Port: 3000                   ║
+║     Mode: development
+╚══════════════════════════════════╝
+    
+[0mGET /api/health [32m200[0m 21.797 ms - 112[0m
+[0mGET /api/health [32m200[0m 2.007 ms - 114[0m
+[0mGET /favicon.ico [33m404[0m 4.751 ms - 150[0m
+[0mGET /favicon.ico [33m404[0m 0.744 ms - 150[0m
+[0mGET /api/leagues [32m200[0m 5.623 ms - 3478[0m
+[0mGET /api/matches?status=upcoming [32m200[0m 13.598 ms - 39670[0m
+[0mGET /api/standings/eng.1 [32m200[0m 3.679 ms - 4909[0m
+[0mGET /api/teams/eng.1 [32m200[0m 3.207 ms - 3100[0m
+[0mGET /api/extra/fin.1 [32m200[0m 8105.385 ms - 46125[0m
+[0mGET /api/health [32m200[0m 1.181 ms - 114[0m
+[0mGET /favicon.ico [33m404[0m 0.663 ms - 150[0m
