@@ -1,13 +1,13 @@
 openapi: 3.0.0
 info:
   title: Football API
-  description: 65 lig, canlı skor, puan durumu, takım bilgileri — ESPN + FlashScore
+  description: 65 lig, canli skor, puan durumu, takim bilgileri - ESPN + FlashScore
   version: 2.0.0
   contact:
     name: Football API
 
 servers:
-  - url: http://35.175.123.153:3000
+  - url: https://roots-hospital-gates-indie.trycloudflare.com
     description: Production
 
 security:
@@ -19,38 +19,38 @@ paths:
       summary: API durumu
       responses:
         '200':
-          description: Sağlık kontrolü
+          description: Saglik kontrolu
 
   /api/leagues:
     get:
-      summary: Tüm ligler
+      summary: Tum ligler
       responses:
         '200':
           description: 65 lig listesi
 
   /api/matches:
     get:
-      summary: Maçları getir
+      summary: Maclari getir
       parameters:
         - name: status
           in: query
           schema:
             type: string
             enum: [live, upcoming, finished]
-          description: Maç durumu
+          description: Mac durumu
         - name: league
           in: query
           schema:
             type: string
-          description: Lig ID (örn: eng.1, tur.1)
+          description: Lig ID (ornek eng.1, tur.1)
         - name: search
           in: query
           schema:
             type: string
-          description: Takım veya lig adı
+          description: Takim veya lig adi
       responses:
         '200':
-          description: Maç listesi
+          description: Mac listesi
 
   /api/standings/{leagueId}:
     get:
@@ -67,7 +67,7 @@ paths:
 
   /api/teams/{leagueId}:
     get:
-      summary: Takım listesi
+      summary: Takim listesi
       parameters:
         - name: leagueId
           in: path
@@ -76,7 +76,7 @@ paths:
             type: string
       responses:
         '200':
-          description: Takım listesi
+          description: Takim listesi
 
   /api/extra/{leagueId}:
     get:
@@ -89,7 +89,7 @@ paths:
             type: string
       responses:
         '200':
-          description: FlashScore maçları
+          description: FlashScore maclari
 
 components:
   securitySchemes:
