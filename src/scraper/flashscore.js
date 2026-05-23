@@ -39,7 +39,7 @@ class FlashScoreScraper {
     if (this.browser) { await this.browser.close(); this.browser = null; }
   }
 
-  async scrapeCountry(countrySlug, waitMs = 4000) {
+  async scrapeCountry(countrySlug, waitMs = 2000) {
     const browser = await this._getBrowser();
     const page = await browser.newPage();
     await page.setViewport({ width: 1280, height: 800 });
@@ -147,7 +147,10 @@ class FlashScoreScraper {
       try {
         console.log(`  📡 ${league.name}...`);
         if (!league.slug) { console.log(`    ✗ slug bulunamadı`); continue; }
-        const data = await this.scrapeCountry(league.slug);
+        const data = await Promise.race([
+          this.scrapeCountry(league.slug),
+          new Promise((_, r) => setTimeout(r, 20000, new Error('timeout'))),
+        ]);
         results[league.id] = { ...data, league: league.name };
         console.log(`    ✓ ${data.count} maç`);
       } catch (e) {
