@@ -26,7 +26,7 @@ class FlashScoreScraper {
   }
 
   async _getBrowser() {
-    if (!this.browser || !this.browser.isConnected()) {
+    if (!this.browser || !this.browser.connected) {
       this.browser = await puppeteer.launch({
         headless: true,
         args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
