@@ -1,6 +1,8 @@
 node_modules/
 data/*.json
 .env
+*.log
+railway.json
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
