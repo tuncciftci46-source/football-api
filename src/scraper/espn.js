@@ -272,9 +272,15 @@ async function fetchEventDetails(leagueId, eventId) {
   return detail;
 }
 
+function isEspnLeague(id) {
+  const info = LEAGUES[id];
+  return !info || info.source !== 'flashscore';
+}
+
 async function fetchAllScoreboards() {
   const results = {};
   for (const [id] of Object.entries(LEAGUES)) {
+    if (!isEspnLeague(id)) continue;
     try {
       const matches = await fetchLeagueScoreboard(id);
       results[id] = { leagueId: id, count: matches.length, matches };
@@ -289,6 +295,7 @@ async function fetchAllScoreboards() {
 async function fetchAllStandings() {
   const results = {};
   for (const [id] of Object.entries(LEAGUES)) {
+    if (!isEspnLeague(id)) continue;
     try {
       const data = await fetchLeagueStandings(id);
       results[id] = data;
@@ -303,6 +310,7 @@ async function fetchAllStandings() {
 async function fetchAllTeams() {
   const results = {};
   for (const [id] of Object.entries(LEAGUES)) {
+    if (!isEspnLeague(id)) continue;
     try {
       const teams = await fetchLeagueTeams(id);
       results[id] = { leagueId: id, count: teams.length, teams };

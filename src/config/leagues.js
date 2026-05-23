@@ -24,7 +24,7 @@ const LEAGUES = {
   'cro.1': { name: 'HNL', country: 'Hırvatistan', logo: '' },
   'cze.1': { name: 'First League', country: 'Çekya', logo: '' },
   'den.1': { name: 'Superliga', country: 'Danimarka', logo: '' },
-  'ukr.1': { name: 'Premier League', country: 'Ukrayna', logo: '' },
+  'ukr.1': { name: 'Premier League', country: 'Ukrayna', logo: '', source: 'flashscore' },
   'rus.1': { name: 'Premier League', country: 'Rusya', logo: '' },
   'pol.1': { name: 'Ekstraklasa', country: 'Polonya', logo: '' },
   'rou.1': { name: 'Liga I', country: 'Romanya', logo: '' },
