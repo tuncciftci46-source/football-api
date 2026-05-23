@@ -9,7 +9,13 @@
     "prod": "set NODE_ENV=production&& node src/index.js",
     "refresh": "curl http://localhost:3000/api/refresh"
   },
-  "keywords": ["football", "soccer", "api", "live-scores", "standings"],
+  "keywords": [
+    "football",
+    "soccer",
+    "api",
+    "live-scores",
+    "standings"
+  ],
   "author": "Bot",
   "license": "ISC",
   "type": "commonjs",
@@ -23,7 +29,7 @@
     "helmet": "^8.2.0",
     "morgan": "^1.10.1",
     "node-cron": "^4.2.1",
-    "puppeteer-core": "^25.0.4",
+    "puppeteer": "^25.0.4",
     "uuid": "^14.0.0"
   }
 }

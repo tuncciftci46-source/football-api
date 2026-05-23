@@ -1,7 +1,5 @@
-const puppeteer = require('puppeteer-core');
+const puppeteer = require('puppeteer');
 const { LEAGUES } = require('../config/leagues');
-
-const CHROME_PATH = process.env.CHROME_PATH || 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 
 const COUNTRY_SLUGS = {
   'Türkiye': 'turkey', 'Finlandiya': 'finland', 'Belarus': 'belarus',
@@ -30,7 +28,6 @@ class FlashScoreScraper {
   async _getBrowser() {
     if (!this.browser || !this.browser.isConnected()) {
       this.browser = await puppeteer.launch({
-        executablePath: CHROME_PATH,
         headless: true,
         args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
       });
