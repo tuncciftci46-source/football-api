@@ -11,7 +11,6 @@ require('dotenv').config();
 
 const store = require('./db/store');
 const espn = require('./scraper/espn');
-const flashscore = require('./scraper/flashscore');
 const { LEAGUES } = require('./config/leagues');
 
 const app = express();
@@ -46,7 +45,6 @@ app.use('/api/leagues', apiKeyAuth, require('./routes/leagues'));
 app.use('/api/matches', apiKeyAuth, require('./routes/matches'));
 app.use('/api/standings', apiKeyAuth, require('./routes/standings'));
 app.use('/api/teams', apiKeyAuth, require('./routes/teams'));
-app.use('/api/extra', apiKeyAuth, require('./routes/extra'));
 
 // History
 app.get('/api/history', apiKeyAuth, (req, res) => {
@@ -95,21 +93,15 @@ app.get('/api/refresh', apiKeyAuth, async (req, res) => {
     const teams = await espn.fetchAllTeams();
     store.write('teams', teams);
 
-    console.log('🌍 FlashScore ekstra ligler...');
-    const extra = await flashscore.scrapeAllExtra();
-    store.write('extra', extra);
-
     const elapsed = ((Date.now() - start) / 1000).toFixed(1);
-    const extraTotal = Object.values(extra).reduce((s, l) => s + (l.count || 0), 0);
 
     console.log(`\n✅ Güncelleme tamam (${elapsed}s)`);
     console.log(`   • ${Object.keys(LEAGUES).length} lig`);
     console.log(`   • ${total} ESPN maçı`);
-    console.log(`   • ${extraTotal} ekstra maç`);
     const histCount = store.read('history')?.count || 0;
     console.log(`   • ${histCount} geçmiş maç`);
 
-    res.json({ success: true, elapsed, stats: { leagues: Object.keys(LEAGUES).length, matches: total, extra: extraTotal, history: histCount } });
+    res.json({ success: true, elapsed, stats: { leagues: Object.keys(LEAGUES).length, matches: total, history: histCount } });
   } catch (e) {
     console.error('✗ Hata:', e.message);
     res.status(500).json({ success: false, error: e.message });

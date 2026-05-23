@@ -53,13 +53,12 @@ function renderMarketsFull(markets) {
 
 async function loadAll() {
   try {
-    const [leaguesData, matchesData, extraData] = await Promise.all([
+    const [leaguesData, matchesData] = await Promise.all([
       API.getLeagues(),
       API.getMatches(),
-      API.get('/extra?all=true').catch(() => ({ matches: [] })),
     ]);
     state.leagues = leaguesData.leagues || [];
-    state.allMatches = (matchesData.matches || []).concat(extraData.matches || []);
+    state.allMatches = matchesData.matches || [];
     renderView(state.currentView);
   } catch (e) {
     console.error('Load error:', e);
