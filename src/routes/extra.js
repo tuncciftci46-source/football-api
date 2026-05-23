@@ -49,8 +49,8 @@ router.get('/', (req, res) => {
   if (all) {
     const cached = store.read('extra');
     if (cached) {
-      const matches = Object.values(cached).flatMap(l => (l.matches || []).map(m => ({
-        ...m, leagueId: l.leagueId || m.leagueId, league: l.league,
+      const matches = Object.entries(cached).flatMap(([id, l]) => (l.matches || []).map(m => ({
+        ...m, leagueId: id, league: l.league,
       })));
       return res.json({ count: matches.length, leagues: flashscoreLeagues, matches });
     }
