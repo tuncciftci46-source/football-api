@@ -44,6 +44,19 @@ router.get('/', (req, res) => {
   const flashscoreLeagues = Object.entries(LEAGUES)
     .filter(([_, info]) => info.source === 'flashscore')
     .map(([id, info]) => ({ id, ...info, slug: COUNTRY_SLUGS[info.country] || info.country.toLowerCase() }));
+
+  const all = req.query.all === 'true';
+  if (all) {
+    const cached = store.read('extra');
+    if (cached) {
+      const matches = Object.values(cached).flatMap(l => (l.matches || []).map(m => ({
+        ...m, leagueId: l.leagueId || m.leagueId, league: l.league,
+      })));
+      return res.json({ count: matches.length, leagues: flashscoreLeagues, matches });
+    }
+    return res.json({ count: 0, leagues: flashscoreLeagues, matches: [] });
+  }
+
   res.json({ count: flashscoreLeagues.length, leagues: flashscoreLeagues });
 });
 
