@@ -1,0 +1,250 @@
+:root {
+  --bg-primary: #0a0e17;
+  --bg-secondary: #111827;
+  --bg-card: #1a2332;
+  --bg-card-hover: #1f2b3d;
+  --bg-nav: #0d1321;
+  --text-primary: #f0f4f8;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --accent: #22d3ee;
+  --accent-dark: #0e7490;
+  --green: #22c55e;
+  --green-bg: rgba(34,197,94,0.15);
+  --red: #ef4444;
+  --red-bg: rgba(239,68,68,0.15);
+  --yellow: #eab308;
+  --yellow-bg: rgba(234,179,8,0.15);
+  --blue: #3b82f6;
+  --blue-bg: rgba(59,130,246,0.15);
+  --orange: #f97316;
+  --border: #1e293b;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-xs: 4px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.3);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-secondary); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.navbar {
+  background: var(--bg-nav);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.nav-brand { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 700; color: var(--accent); white-space: nowrap; }
+.brand-icon { font-size: 22px; }
+.nav-tabs { display: flex; gap: 4px; flex: 1; overflow-x: auto; }
+.nav-tab {
+  background: none; border: none; color: var(--text-secondary);
+  padding: 8px 16px; border-radius: var(--radius-sm); cursor: pointer;
+  font-size: 14px; font-weight: 500; white-space: nowrap; transition: all 0.2s;
+}
+.nav-tab:hover { color: var(--text-primary); background: var(--bg-card); }
+.nav-tab.active { color: var(--accent); background: var(--accent-dark); box-shadow: 0 0 12px rgba(34,211,238,0.2); }
+.nav-actions { display: flex; gap: 8px; align-items: center; }
+.btn {
+  padding: 8px 16px; border: none; border-radius: var(--radius-sm); cursor: pointer;
+  font-size: 13px; font-weight: 600; transition: all 0.2s;
+}
+.btn-leagues { background: var(--bg-card); color: var(--text-secondary); border: 1px solid var(--border); }
+.btn-leagues:hover { border-color: var(--accent); color: var(--accent); }
+.btn-coupon { background: linear-gradient(135deg, var(--accent-dark), var(--accent)); color: #fff; box-shadow: 0 2px 8px rgba(34,211,238,0.3); }
+.btn-coupon:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(34,211,238,0.4); }
+.btn-refresh { background: var(--bg-card); color: var(--text-secondary); border: 1px solid var(--border); font-size: 16px; padding: 8px 12px; }
+.btn-refresh:hover { border-color: var(--green); color: var(--green); }
+.btn-refresh.loading { animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.app-container { display: flex; max-width: 1600px; margin: 0 auto; position: relative; }
+.main-content { flex: 1; padding: 16px; min-height: calc(100vh - 60px); transition: margin-right 0.3s; }
+.coupon-panel {
+  width: 360px; background: var(--bg-secondary); border-left: 1px solid var(--border);
+  position: fixed; right: -380px; top: 60px; bottom: 0; z-index: 90;
+  transition: right 0.3s ease; display: flex; flex-direction: column;
+  box-shadow: -4px 0 24px rgba(0,0,0,0.4);
+}
+.coupon-panel.open { right: 0; }
+.main-content.shrink { margin-right: 360px; }
+.coupon-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--border); }
+.coupon-header h3 { font-size: 16px; color: var(--accent); }
+.btn-close { background: none; border: none; color: var(--text-muted); font-size: 24px; cursor: pointer; padding: 4px 8px; border-radius: var(--radius-xs); }
+.btn-close:hover { color: var(--text-primary); background: var(--bg-card); }
+.coupon-body { flex: 1; overflow-y: auto; padding: 12px; }
+.coupon-empty { text-align: center; color: var(--text-muted); padding: 40px 16px; font-size: 14px; }
+.coupon-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 8px; position: relative; }
+.coupon-item .ci-league { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
+.coupon-item .ci-teams { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+.coupon-item .ci-pick { display: inline-block; background: var(--accent-dark); color: var(--accent); padding: 2px 8px; border-radius: var(--radius-xs); font-size: 11px; font-weight: 600; }
+.coupon-item .ci-odds { float: right; font-weight: 700; color: var(--yellow); }
+.coupon-item .ci-remove { position: absolute; top: 8px; right: 8px; background: none; border: none; color: var(--red); cursor: pointer; font-size: 16px; opacity: 0; }
+.coupon-item:hover .ci-remove { opacity: 1; }
+.coupon-footer { padding: 16px 20px; border-top: 1px solid var(--border); background: var(--bg-card); }
+.coupon-stake { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.coupon-stake label { font-size: 13px; color: var(--text-secondary); }
+.coupon-stake input { width: 120px; padding: 6px 12px; background: var(--bg-primary); border: 1px solid var(--border); border-radius: var(--radius-xs); color: var(--text-primary); font-size: 14px; text-align: right; }
+.coupon-stake input:focus { outline: none; border-color: var(--accent); }
+.coupon-total, .coupon-potential { display: flex; justify-content: space-between; font-size: 14px; padding: 4px 0; }
+.btn-clear-coupon { width: 100%; margin-top: 12px; padding: 10px; background: var(--red-bg); color: var(--red); border: 1px solid rgba(239,68,68,0.3); border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.btn-clear-coupon:hover { background: var(--red); color: #fff; }
+.view { display: none; }
+.view.active { display: block; }
+.section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+.section-header h2 { font-size: 20px; font-weight: 700; }
+.section-header .count { font-size: 13px; color: var(--text-muted); font-weight: 400; }
+.league-group { margin-bottom: 20px; }
+.league-group-header { display: flex; align-items: center; gap: 10px; padding: 10px 16px; background: var(--bg-card); border-radius: var(--radius-sm); margin-bottom: 8px; cursor: pointer; border: 1px solid var(--border); }
+.lg-logo { width: 24px; height: 24px; object-fit: contain; border-radius: 50%; }
+.lg-name { font-weight: 600; font-size: 14px; flex: 1; }
+.lg-country { font-size: 12px; color: var(--text-muted); }
+.lg-count { font-size: 12px; color: var(--text-muted); background: var(--bg-primary); padding: 2px 10px; border-radius: 12px; }
+.match-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 6px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 12px; }
+.match-card:hover { border-color: var(--accent); background: var(--bg-card-hover); transform: translateX(4px); }
+.match-card.live { border-left: 3px solid var(--red); }
+.match-card.upcoming { border-left: 3px solid var(--blue); }
+.match-card.finished { border-left: 3px solid var(--text-muted); }
+.mc-status { width: 56px; text-align: center; flex-shrink: 0; }
+.mc-status .status-badge { display: inline-block; padding: 3px 8px; border-radius: var(--radius-xs); font-size: 11px; font-weight: 700; text-transform: uppercase; }
+.status-badge.live { background: var(--red-bg); color: var(--red); animation: pulse 1.5s infinite; }
+.status-badge.upcoming { background: var(--blue-bg); color: var(--blue); }
+.status-badge.finished { background: var(--text-muted); color: var(--text-primary); }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
+.mc-teams { flex: 1; min-width: 0; }
+.mc-team { display: flex; align-items: center; gap: 8px; padding: 2px 0; }
+.mc-team-logo { width: 20px; height: 20px; object-fit: contain; }
+.mc-team-name { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mc-team.away .mc-team-name { color: var(--text-secondary); }
+.mc-score { text-align: center; flex-shrink: 0; min-width: 48px; }
+.mc-score .score-main { font-size: 20px; font-weight: 800; letter-spacing: 1px; }
+.mc-odds { display: flex; gap: 4px; flex-shrink: 0; justify-content: flex-end; }
+@media (max-width: 768px) { .mc-odds { flex-wrap: wrap; max-width: 180px; } }
+.odds-btn { padding: 4px 10px; background: var(--bg-primary); border: 1px solid var(--border); border-radius: var(--radius-xs); color: var(--text-secondary); font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.15s; text-align: center; min-width: 44px; }
+.odds-btn:hover { border-color: var(--yellow); color: var(--yellow); }
+.odds-btn.selected { background: var(--yellow-bg); border-color: var(--yellow); color: var(--yellow); }
+.odds-btn .ob-label { display: block; font-size: 9px; color: var(--text-muted); font-weight: 400; }
+
+.modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 200; backdrop-filter: blur(4px); align-items: center; justify-content: center; }
+.modal-overlay.open { display: flex; }
+.modal-content { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius); width: 90%; max-width: 800px; max-height: 85vh; overflow-y: auto; padding: 32px; position: relative; box-shadow: var(--shadow); }
+.modal-content .modal-close { position: absolute; top: 16px; right: 16px; font-size: 28px; }
+.md-header { text-align: center; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+.md-league { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; }
+.md-teams { display: flex; align-items: center; justify-content: center; gap: 24px; }
+.md-team { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.md-team-logo { width: 56px; height: 56px; object-fit: contain; }
+.md-team-name { font-size: 18px; font-weight: 700; }
+.md-vs { font-size: 14px; color: var(--text-muted); }
+.md-score-main { font-size: 40px; font-weight: 800; letter-spacing: 2px; }
+.md-time { font-size: 14px; color: var(--text-muted); margin-top: 8px; }
+.md-body { padding-top: 8px; }
+.md-section { margin-bottom: 24px; }
+.md-section h4 { font-size: 14px; font-weight: 600; color: var(--accent); margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.analysis-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.analysis-item { background: var(--bg-card); border-radius: var(--radius-sm); padding: 12px 16px; }
+.analysis-item .ai-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.analysis-item .ai-value { font-size: 16px; font-weight: 700; }
+.analysis-item .ai-bar { height: 4px; border-radius: 2px; margin-top: 8px; background: var(--bg-primary); overflow: hidden; }
+.analysis-item .ai-bar-fill { height: 100%; border-radius: 2px; transition: width 0.5s; }
+.ai-bar-fill.green { background: var(--green); }
+.ai-bar-fill.red { background: var(--red); }
+.ai-bar-fill.yellow { background: var(--yellow); }
+.ai-bar-fill.blue { background: var(--blue); }
+.form-container { display: flex; gap: 6px; margin-top: 8px; }
+.form-badge { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
+.form-badge.win { background: var(--green-bg); color: var(--green); }
+.form-badge.draw { background: var(--yellow-bg); color: var(--yellow); }
+.form-badge.loss { background: var(--red-bg); color: var(--red); }
+.odds-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.odds-table th { padding: 8px 12px; text-align: center; color: var(--text-muted); font-weight: 500; border-bottom: 1px solid var(--border); }
+.odds-table td { padding: 8px 12px; text-align: center; border-bottom: 1px solid var(--border); }
+.value-badge { display: inline-block; padding: 2px 8px; border-radius: var(--radius-xs); font-size: 11px; font-weight: 600; }
+.value-badge.ev { background: var(--green-bg); color: var(--green); }
+.value-badge.no { color: var(--text-muted); }
+.xg-bar { display: flex; height: 24px; border-radius: var(--radius-xs); overflow: hidden; margin: 8px 0; }
+.xg-bar .xg-home { background: var(--blue); display: flex; align-items: center; justify-content: flex-start; padding-left: 8px; font-size: 11px; font-weight: 700; }
+.xg-bar .xg-away { background: var(--orange); display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; font-size: 11px; font-weight: 700; }
+
+.valuebet-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; margin-bottom: 8px; border-left: 3px solid var(--green); }
+.valuebet-card .vb-league { font-size: 12px; color: var(--text-muted); }
+.valuebet-card .vb-teams { font-size: 14px; font-weight: 600; margin: 4px 0; }
+.valuebet-card .vb-detail { font-size: 13px; color: var(--text-secondary); }
+.valuebet-card .vb-odds { color: var(--yellow); font-weight: 700; }
+.valuebet-card .vb-value { color: var(--green); font-weight: 700; }
+
+.toast-container { position: fixed; top: 76px; right: 20px; z-index: 300; display: flex; flex-direction: column; gap: 8px; }
+.toast { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 20px; box-shadow: var(--shadow); animation: slideIn 0.3s ease; font-size: 13px; min-width: 200px; }
+.toast.success { border-left: 3px solid var(--green); }
+.toast.error { border-left: 3px solid var(--red); }
+.toast.info { border-left: 3px solid var(--blue); }
+@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+.loading-spinner { text-align: center; padding: 60px; color: var(--text-muted); }
+.loading-spinner .spinner { width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
+
+@media (max-width: 768px) {
+  .navbar { padding: 0 8px; gap: 4px; height: 52px; }
+  .nav-brand { font-size: 14px; }
+  .brand-icon { font-size: 16px; }
+  .brand-text { display: none; }
+  .nav-tabs { flex: 0 1 auto; }
+  .nav-tab { padding: 4px 8px; font-size: 11px; flex-shrink: 0; }
+  .btn-leagues { display: none; }
+  .btn-refresh { padding: 6px 8px; font-size: 14px; }
+  .btn-coupon { padding: 6px 10px; font-size: 11px; white-space: nowrap; }
+  .main-content { padding: 8px; }
+  .coupon-panel { width: 100%; right: -100%; }
+  .main-content.shrink { margin-right: 0; }
+  .modal-content { padding: 16px; width: 98%; max-height: 90vh; }
+  .analysis-grid { grid-template-columns: 1fr; }
+  .match-card { flex-wrap: wrap; padding: 10px 12px; gap: 6px; }
+  .match-card:hover { transform: none; }
+  .mc-status { width: 40px; }
+  .mc-status .status-badge { font-size: 9px; padding: 2px 5px; }
+  .mc-teams { flex: 0 0 auto; min-width: 0; max-width: calc(100% - 130px); }
+  .mc-team-logo { width: 16px; height: 16px; }
+  .mc-team-name { font-size: 12px; }
+  .mc-score { min-width: 36px; }
+  .mc-score .score-main { font-size: 16px; }
+  .mc-odds { width: 100%; flex-wrap: wrap; justify-content: flex-start; max-width: none; }
+  .odds-btn { padding: 3px 7px; min-width: 36px; font-size: 10px; }
+  .odds-btn .ob-label { font-size: 8px; }
+  .md-teams { gap: 8px; }
+  .md-team-logo { width: 40px; height: 40px; }
+  .md-team-name { font-size: 14px; }
+  .md-score-main { font-size: 28px; }
+  .md-section h4 { font-size: 12px; }
+  .section-header h2 { font-size: 16px; }
+  .league-group-header { padding: 8px 10px; }
+  .lg-name { font-size: 12px; }
+  .lg-count { font-size: 10px; padding: 1px 8px; }
+  .valuebet-card { padding: 12px; }
+  .toast-container { right: 8px; top: 64px; }
+  .toast { font-size: 12px; padding: 10px 14px; min-width: 150px; }
+}
+
+@media (max-width: 480px) {
+  .navbar { padding: 0 4px; gap: 2px; }
+  .nav-tab { padding: 3px 6px; font-size: 10px; }
+  .btn-coupon { padding: 4px 8px; font-size: 10px; }
+  .btn-coupon #couponCount { font-size: 10px; }
+  .btn-refresh { padding: 4px 6px; font-size: 12px; }
+  .match-card { padding: 8px 8px; gap: 4px; }
+  .mc-team-name { font-size: 11px; }
+  .mc-score .score-main { font-size: 14px; }
+  .odds-btn { padding: 2px 5px; min-width: 32px; font-size: 9px; }
+  .odds-btn .ob-label { font-size: 7px; }
+  .coupon-panel { top: 52px; }
+}

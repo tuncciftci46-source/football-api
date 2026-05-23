@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FootyAnalyst - Futbol Analiz Platformu</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">
+      <span class="brand-icon">⚽</span>
+      <span class="brand-text">FootyAnalyst</span>
+    </div>
+    <div class="nav-tabs" id="navTabs">
+      <button class="nav-tab active" data-view="live">Canlı</button>
+      <button class="nav-tab" data-view="today">Bugün</button>
+      <button class="nav-tab" data-view="tomorrow">Yarın</button>
+      <button class="nav-tab" data-view="valuebets">Value Bet</button>
+      <button class="nav-tab" data-view="finished">Bitmiş</button>
+    </div>
+    <div class="nav-actions">
+      <button class="btn btn-leagues" id="btnLeagues">65 Lig</button>
+      <button class="btn btn-coupon" id="btnCoupon">
+        🎫 Kupon (<span id="couponCount">0</span>)
+      </button>
+      <button class="btn btn-refresh" id="btnRefresh" title="Verileri Tazele">🔄</button>
+    </div>
+  </nav>
+
+  <div class="app-container">
+    <main class="main-content" id="mainContent">
+      <div class="view active" id="view-live"></div>
+      <div class="view" id="view-today"></div>
+      <div class="view" id="view-tomorrow"></div>
+      <div class="view" id="view-valuebets"></div>
+      <div class="view" id="view-finished"></div>
+    </main>
+
+    <aside class="coupon-panel" id="couponPanel">
+      <div class="coupon-header">
+        <h3>🎫 Sanal Kuponum</h3>
+        <button class="btn-close" id="closeCoupon">&times;</button>
+      </div>
+      <div class="coupon-body" id="couponBody"></div>
+      <div class="coupon-footer" id="couponFooter" style="display:none">
+        <div class="coupon-stake">
+          <label>Miktar (₺)</label>
+          <input type="number" id="stakeInput" value="100" min="1" step="10">
+        </div>
+        <div class="coupon-total">
+          <span>Toplam Oran:</span>
+          <span class="total-odds" id="totalOdds">1.00</span>
+        </div>
+        <div class="coupon-potential">
+          <span>Kazanç:</span>
+          <span class="potential-win" id="potentialWin">0.00 ₺</span>
+        </div>
+        <button class="btn btn-clear-coupon" id="clearCoupon">Temizle</button>
+      </div>
+    </aside>
+  </div>
+
+  <div class="modal-overlay" id="matchModal">
+    <div class="modal-content">
+      <button class="btn-close modal-close">&times;</button>
+      <div id="matchDetail"></div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="js/api.js"></script>
+  <script src="js/analysis.js"></script>
+  <script src="js/coupon.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

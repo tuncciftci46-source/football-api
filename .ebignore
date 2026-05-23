@@ -1,0 +1,10 @@
+.git/
+node_modules/
+data/
+.env
+server.log
+server_error.log
+*.log
+.gitignore
+.ebignore
+README.md

@@ -1,4 +1,7 @@
+process.env.TZ = 'Europe/Istanbul';
+
 const express = require('express');
+const path = require('path');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
@@ -15,12 +18,14 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
-app.use(helmet());
+app.use(helmet({ contentSecurityPolicy: false }));
 app.use(cors({ origin: '*' }));
 app.use(express.json());
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 
-// API Key auth (for RapidAPI)
+// Serve static webapp
+app.use(express.static(path.join(__dirname, '..', 'public')));
+
 const apiKeyAuth = (req, res, next) => {
   if (process.env.NODE_ENV !== 'production') return next();
   const key = req.headers['x-rapidapi-key'] || req.headers['x-api-key'] || req.query.apiKey;
@@ -30,20 +35,31 @@ const apiKeyAuth = (req, res, next) => {
   next();
 };
 
-// Rate limiting
 const limiter = rateLimit({
   windowMs: 60 * 1000,
-  max: parseInt(process.env.RATE_LIMIT) || 60,
+  max: parseInt(process.env.RATE_LIMIT) || 120,
   message: { error: 'Çok fazla istek, lütfen bekleyin' },
 });
 app.use('/api/', limiter);
 
-// Routes
 app.use('/api/leagues', apiKeyAuth, require('./routes/leagues'));
 app.use('/api/matches', apiKeyAuth, require('./routes/matches'));
 app.use('/api/standings', apiKeyAuth, require('./routes/standings'));
 app.use('/api/teams', apiKeyAuth, require('./routes/teams'));
 app.use('/api/extra', apiKeyAuth, require('./routes/extra'));
+
+// History
+app.get('/api/history', apiKeyAuth, (req, res) => {
+  const { team, league, limit } = req.query;
+  const data = store.read('history');
+  if (!data) return res.json({ count: 0, matches: [] });
+  let matches = data.matches;
+  if (team) matches = matches.filter(m => m.homeTeam.id === team || m.awayTeam.id === team || m.homeTeam.name?.toLowerCase().includes(team.toLowerCase()) || m.awayTeam.name?.toLowerCase().includes(team.toLowerCase()));
+  if (league) matches = matches.filter(m => m.leagueId === league);
+  matches.sort((a, b) => new Date(b.date) - new Date(a.date));
+  if (limit) matches = matches.slice(0, parseInt(limit));
+  res.json({ count: matches.length, total: data.count, matches });
+});
 
 // Health
 app.get('/api/health', (req, res) => {
@@ -53,6 +69,7 @@ app.get('/api/health', (req, res) => {
     time: new Date().toISOString(),
     uptime: Math.floor(process.uptime()),
     leagues: Object.keys(LEAGUES).length,
+    history: store.read('history')?.count || 0,
     mode: process.env.NODE_ENV || 'development',
   });
 });
@@ -70,6 +87,9 @@ app.get('/api/refresh', apiKeyAuth, async (req, res) => {
     console.log('⚽ Maç skorları...');
     const scoreboards = await espn.fetchAllScoreboards();
     store.write('scoreboards', scoreboards);
+    const allMatches = Object.values(scoreboards).flatMap(l => l.matches || []);
+    store.appendHistory(allMatches);
+    const total = allMatches.length;
 
     console.log('🏷️ Takımlar...');
     const teams = await espn.fetchAllTeams();
@@ -80,15 +100,16 @@ app.get('/api/refresh', apiKeyAuth, async (req, res) => {
     store.write('extra', extra);
 
     const elapsed = ((Date.now() - start) / 1000).toFixed(1);
-    const total = Object.values(scoreboards).reduce((s, l) => s + (l.count || 0), 0);
     const extraTotal = Object.values(extra).reduce((s, l) => s + (l.count || 0), 0);
 
     console.log(`\n✅ Güncelleme tamam (${elapsed}s)`);
     console.log(`   • ${Object.keys(LEAGUES).length} lig`);
     console.log(`   • ${total} ESPN maçı`);
-    console.log(`   • ${extraTotal} ekstra maç\n`);
+    console.log(`   • ${extraTotal} ekstra maç`);
+    const histCount = store.read('history')?.count || 0;
+    console.log(`   • ${histCount} geçmiş maç`);
 
-    res.json({ success: true, elapsed, stats: { leagues: Object.keys(LEAGUES).length, matches: total, extra: extraTotal } });
+    res.json({ success: true, elapsed, stats: { leagues: Object.keys(LEAGUES).length, matches: total, extra: extraTotal, history: histCount } });
   } catch (e) {
     console.error('✗ Hata:', e.message);
     res.status(500).json({ success: false, error: e.message });
@@ -102,8 +123,10 @@ if (process.env.CRON_ENABLED !== 'false') {
     try {
       const scoreboards = await espn.fetchAllScoreboards();
       store.write('scoreboards', scoreboards);
-      const count = Object.values(scoreboards).reduce((s, l) => s + (l.count || 0), 0);
-      console.log(`✓ ${count} maç güncellendi`);
+      const allMatches = Object.values(scoreboards).flatMap(l => l.matches || []);
+      store.appendHistory(allMatches);
+      const count = allMatches.length;
+      console.log(`✓ ${count} maç güncellendi, geçmiş kaydedildi`);
     } catch (e) { console.error('✗', e.message); }
   });
 
