@@ -39,7 +39,7 @@ class FlashScoreScraper {
     if (this.browser) { await this.browser.close(); this.browser = null; }
   }
 
-  async scrapeCountry(countrySlug, waitMs = 2000) {
+  async scrapeCountry(countrySlug, waitMs = 1000) {
     const browser = await this._getBrowser();
     const page = await browser.newPage();
     await page.setViewport({ width: 1280, height: 800 });
@@ -143,18 +143,28 @@ class FlashScoreScraper {
   async scrapeAllExtra() {
     const leagues = getExtraLeagues();
     const results = {};
-    for (const league of leagues) {
-      try {
+    const batchSize = 4;
+    for (let i = 0; i < leagues.length; i += batchSize) {
+      const batch = leagues.slice(i, i + batchSize);
+      const scraped = await Promise.allSettled(batch.map(async (league) => {
+        if (!league.slug) return { id: league.id, error: 'slug bulunamadı' };
         console.log(`  📡 ${league.name}...`);
-        if (!league.slug) { console.log(`    ✗ slug bulunamadı`); continue; }
-        const data = await Promise.race([
-          this.scrapeCountry(league.slug),
-          new Promise((_, r) => setTimeout(r, 20000, new Error('timeout'))),
-        ]);
-        results[league.id] = { ...data, league: league.name };
-        console.log(`    ✓ ${data.count} maç`);
-      } catch (e) {
-        console.log(`    ✗ ${league.id}: ${e.message}`);
+        try {
+          const data = await this.scrapeCountry(league.slug);
+          return { id: league.id, league: league.name, data };
+        } catch (e) {
+          return { id: league.id, error: e.message };
+        }
+      }));
+      for (const s of scraped) {
+        if (s.status === 'fulfilled' && s.value.data) {
+          results[s.value.id] = { ...s.value.data, league: s.value.league };
+          console.log(`    ✓ ${s.value.id} (${s.value.data.count} maç)`);
+        } else if (s.status === 'fulfilled') {
+          console.log(`    ✗ ${s.value.id}: ${s.value.error}`);
+        } else {
+          console.log(`    ✗ batch error: ${s.reason?.message}`);
+        }
       }
     }
     return results;
