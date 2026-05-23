@@ -68,7 +68,7 @@ class FlashScoreScraper {
     while (i < lines.length) {
       const line = lines[i];
 
-      if (['LATEST SCORES', 'SCORES', 'NEWS', 'FAVORITES', 'FOOTBALL', 'TENNIS', 'BASKETBALL', 'HOCKEY', 'GOLF', 'HANDBALL', 'BASEBALL', 'SNOOKER', 'AD'].includes(line)) {
+      if (['LATEST SCORES', 'SCHEDULED', 'SCORES', 'NEWS', 'FAVORITES', 'FOOTBALL', 'TENNIS', 'BASKETBALL', 'HOCKEY', 'GOLF', 'HANDBALL', 'BASEBALL', 'SNOOKER', 'AD'].includes(line)) {
         i++; continue;
       }
 
@@ -107,16 +107,13 @@ class FlashScoreScraper {
         }
 
         if (i + 1 < lines.length && time) {
-          const home = lines[i], away = lines[i + 1];
-          if (home && away && !home.match(/^\d/) && !away.match(/^\d/) &&
-              home.length > 1 && away.length > 1 &&
-              home.length < 40 && away.length < 40 &&
-              home !== away && !home.match(/^\d{2}:\d{2}$/)) {
+          const home = this._cleanName(lines[i]), away = this._cleanName(lines[i + 1]);
+          if (home && away && home.length > 1 && away.length > 1 && home !== away && !home.match(/^\d{2}:\d{2}$/)) {
             matches.push({
               date: rawDate.replace(/\./g, '-'),
               time,
-              homeTeam: this._cleanName(home),
-              awayTeam: this._cleanName(away),
+              homeTeam: home,
+              awayTeam: away,
               homeScore: null,
               awayScore: null,
               status: 'upcoming',
